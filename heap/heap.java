@@ -32,7 +32,7 @@ public class heap {
     
         for (int i = 0; i < currentSize; i++) {
             if (heapArray[i] != null) {
-                System.out.println(heapArray[i].getValue() + " ");
+                System.out.print(i + ": " + heapArray[i].getValue() + "   ");
             } else {
                 System.out.println("-");
             }
@@ -42,8 +42,8 @@ public class heap {
         int countOfGaps = 32;
         int itemsPerRow = 1;
         int columnNumber = 0; // номер элемента в данной строке
-        String lines = "___________________________________________________________________";
-        System.out.println(lines);
+        String line = "___________________________________________________________________";
+        System.out.println(line);
         for (int i = 0; i < currentSize; i++) {
             if (columnNumber == 0) {  // проверяем первый элемент ли в текущей строке
                 for (int k = 0; k < countOfGaps; k++) { // добавляем предшествующие пробелы
@@ -56,14 +56,14 @@ public class heap {
                 countOfGaps /= 2; // уменьшаем количество оступов применяемое для следующей строки
                 itemsPerRow *= 2; // указываем, что элементов может быть вдвое больше
                 columnNumber = 0; // сбрасываем счётчик для текущего элемента строки
-                System.out.println(); // переходим на нову строку
+                System.out.println(); // переходим на новую строку
             } else { //переход к следующему элементу
                 for (int k = 0; k < countOfGaps * 2 - 2; k++) {
                     System.out.print(' '); // добавляем оступы
                 }
             }
         }
-        System.out.println("\n" + lines); // нижний пункир
+        System.out.println("\n" + line); // нижний пункир
     }
 
     public boolean insertNode(int value) { // вставка нового значения
@@ -77,7 +77,7 @@ public class heap {
     }
 
     public Node removeNode(int index) { // удалить элемент по индексу массива
-        if(index > 0 && currentSize > index) {
+        if (index > 0 && currentSize > index) {
             Node root = heapArray[index];
             heapArray[index] = heapArray[--currentSize]; // задаём элементу с переданным индексом, значение последнего элемента
             heapArray[currentSize] = null;// последний элемент удаляем
@@ -121,15 +121,14 @@ public class heap {
             int leftChild = 2 * index + 1; // вычисляем индексы в массиве для левого узла ребенка
             int rightChild = leftChild + 1;// и правого
 
-            if (rightChild < currentSize && heapArray[leftChild].getValue() < heapArray[rightChild].getValue()) {
+            if (rightChild < currentSize && heapArray[leftChild].getValue() < heapArray[rightChild].getValue()) { // вычисляем вершину с ребенка наибольшим числовым значением
                 largerChild = rightChild;
-            }// вычисляем вершину с ребенка наибольшим числовым значением
+            }
             else {
                 largerChild = leftChild;
             }
 
-            if (top.getValue() >= heapArray[largerChild].getValue()) {// если значение вершины больше или равно
-                //значению его наибольшего ребенка
+            if (top.getValue() >= heapArray[largerChild].getValue()) {// если значение вершины больше или равно значению его наибольшего ребенка
                 break;// то выходим из метода
             }
 

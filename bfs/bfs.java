@@ -19,8 +19,8 @@ public class bfs {
 		vertex = sca.next().toCharArray();             // Инициализируем вершину
 		// Инициализируем матрицу
 		matrix = new int [vertexNum][vertexNum];
-		for(int i = 0; i < vertexNum; i++) 
-			for(int j = 0; j < vertexNum; j++)
+		for (int i = 0; i < vertexNum; i++) 
+			for (int j = 0; j < vertexNum; j++)
 				matrix[i][j] = 	(i == j) ?  0 : INF;
 		for(int i = 0; i < matrixNum; i++) {           // Инициализируем вес ребра
 			char start     = readChar();               // Начальная точка края
