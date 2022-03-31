@@ -20,14 +20,15 @@ public class heap {
     private Node[] heapArray; // массив со всеми вершинами
     private int maxSize; // размер массива
     private int currentSize; // количество узлов массиве
+    final int deleted = -999999;
 
-    public heap(int maxSize) { // создание пустой пирамиды
+    public heap(int maxSize) {
         this.maxSize = maxSize;
         this.currentSize = 0;
         heapArray = new Node[maxSize];
     }
 
-    public void printHeap() { // отображение перамиды в консоль
+    public void printHeap() {
         System.out.println("Массив значений: ");
     
         for (int i = 0; i < currentSize; i++) {
@@ -41,47 +42,47 @@ public class heap {
         
         int countOfGaps = 32;
         int itemsPerRow = 1;
-        int columnNumber = 0; // номер элемента в данной строке
+        int columnNumber = 0;
         String line = "___________________________________________________________________";
         System.out.println(line);
         for (int i = 0; i < currentSize; i++) {
-            if (columnNumber == 0) {  // проверяем первый элемент ли в текущей строке
-                for (int k = 0; k < countOfGaps; k++) { // добавляем предшествующие пробелы
+            if (columnNumber == 0) {
+                for (int k = 0; k < countOfGaps; k++) {
                     System.out.print(' ');
                 }
             }
-            System.out.print(heapArray[i].getValue());// выводим в консоль значение вершины
+            System.out.print(heapArray[i].getValue());
     
             if (++columnNumber == itemsPerRow) { // проверяем последний ли элемент в строке
                 countOfGaps /= 2; // уменьшаем количество оступов применяемое для следующей строки
                 itemsPerRow *= 2; // указываем, что элементов может быть вдвое больше
-                columnNumber = 0; // сбрасываем счётчик для текущего элемента строки
-                System.out.println(); // переходим на новую строку
-            } else { //переход к следующему элементу
+                columnNumber = 0;
+                System.out.println();
+            } else {
                 for (int k = 0; k < countOfGaps * 2 - 2; k++) {
-                    System.out.print(' '); // добавляем оступы
+                    System.out.print(' ');
                 }
             }
         }
-        System.out.println("\n" + line); // нижний пункир
+        System.out.println("\n" + line);
     }
 
-    public boolean insertNode(int value) { // вставка нового значения
-        if (currentSize == maxSize) { // проверяем не выходим ли мы за рамки массива
+    public boolean insertNode(int value) {
+        if (currentSize == maxSize) {
             return false;
         }
-        Node newNode = new Node(value);// создание вершины с данным значением
+        Node newNode = new Node(value);
         heapArray[currentSize] = newNode;// вершину задаём в самый низ дерева
-        displaceUp(currentSize++);// пытаемся поднять вершину, если значение вершины позволяет
+        displaceUp(currentSize++);
         return true;
     }
 
-    public Node removeNode(int index) { // удалить элемент по индексу массива
+    public Node removeNode(int index) {
         if (index > 0 && currentSize > index) {
             Node root = heapArray[index];
             heapArray[index] = heapArray[--currentSize]; // задаём элементу с переданным индексом, значение последнего элемента
             heapArray[currentSize] = null;// последний элемент удаляем
-            displaceDown(index);// проталкиваем вниз новый элемент, чтобы он принял должное ему место
+            displaceDown(index);
             return root;
         }
         return null;
@@ -91,37 +92,37 @@ public class heap {
         if (index < 0 || currentSize<=index) {
             return false;
         }
-        int oldValue = heapArray[index].getValue(); // сохраняем старое значение
-        heapArray[index].setValue(newValue); // присваиваем новое
+        int oldValue = heapArray[index].getValue();
+        heapArray[index].setValue(newValue);
 
-        if (oldValue < newValue) {// если узел повышается
-            displaceUp(index);     // выполняется смещение вверх
+        if (oldValue < newValue) {
+            displaceUp(index);
         }
-        else {                  // если понижается
-            displaceDown(index);   // смещение вниз
+        else {
+            displaceDown(index);
         }
         return true;
     }
     
-    private void displaceUp(int index) { //смещение вверх
-        int parentIndex = (index - 1) / 2; // узнаем индекс родителя
-        Node bottom = heapArray[index]; // берем элемент
-        while (index > 0 && heapArray[parentIndex].getValue() < bottom.getValue()) {// если родительский элемент меньше
-            heapArray[index] = heapArray[parentIndex];// то меняем его местами с рассматриваемым
+    private void displaceUp(int index) {
+        int parentIndex = (index - 1) / 2;
+        Node bottom = heapArray[index];
+        while (index > 0 && heapArray[parentIndex].getValue() < bottom.getValue()) {
+            heapArray[index] = heapArray[parentIndex];
             index = parentIndex;
-            parentIndex = (parentIndex - 1) / 2;// берем новый родительский индекс и повторяем сравнение элементов
+            parentIndex = (parentIndex - 1) / 2;
         }
-        heapArray[index] = bottom;// соохраняем результат
+        heapArray[index] = bottom;
     }
     
-    private void displaceDown(int index) {// смещение вниз
+    private void displaceDown(int index) {
         int largerChild;
-        Node top = heapArray[index]; // сохранение корня, пока у узла есть хотя бы один потомок
+        Node top = heapArray[index];
         while (index < currentSize / 2) {// если данное условие не выполняется то элемент уже в самом низу пирамиды
-            int leftChild = 2 * index + 1; // вычисляем индексы в массиве для левого узла ребенка
-            int rightChild = leftChild + 1;// и правого
+            int leftChild = 2 * index + 1;
+            int rightChild = leftChild + 1;
 
-            if (rightChild < currentSize && heapArray[leftChild].getValue() < heapArray[rightChild].getValue()) { // вычисляем вершину с ребенка наибольшим числовым значением
+            if (rightChild < currentSize && heapArray[leftChild].getValue() < heapArray[rightChild].getValue()) {
                 largerChild = rightChild;
             }
             else {
@@ -129,12 +130,13 @@ public class heap {
             }
 
             if (top.getValue() >= heapArray[largerChild].getValue()) {// если значение вершины больше или равно значению его наибольшего ребенка
-                break;// то выходим из метода
+                break;
             }
 
-            heapArray[index] = heapArray[largerChild];// заменяем вершину, большей дочерней вершиной
-            index = largerChild; // текущий индекс переходит вниз
+            heapArray[index] = heapArray[largerChild];
+            index = largerChild;
         }
-        heapArray[index] = top; // задаем конечное местоположение для элемента
+        heapArray[index] = top;
     }
+    
 }

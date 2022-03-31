@@ -6,26 +6,33 @@ public class bfs {
 
     private char[] vertex;    // Коллекция вершин
 	private int[][] matrix;   // Матрица смежности
-	private static final int INF = 999999; // Максимум
+	private static final int INF = 999999;
 	private static int count = 0;
 	/**
 	  * Создать график
 	 */
 	public bfs() {
 		Scanner sca = new Scanner(System.in);
+		System.out.println("Количество вершин: ");
 		int vertexNum = sca.nextInt();                 // Количество вершин
-		int matrixNum = sca.nextInt();                 // Количество сторон
-		vertex        = new char[vertexNum];                
-		vertex = sca.next().toCharArray();             // Инициализируем вершину
+		System.out.println("Количество ребер: ");
+		int matrixNum = sca.nextInt();                 // Количество ребер
+		vertex        = new char[vertexNum];
+		System.out.println("Инициализация вершин: ");              
+		vertex = sca.next().toCharArray();             // Инициализируем вершины
 		// Инициализируем матрицу
 		matrix = new int [vertexNum][vertexNum];
 		for (int i = 0; i < vertexNum; i++) 
 			for (int j = 0; j < vertexNum; j++)
 				matrix[i][j] = 	(i == j) ?  0 : INF;
-		for(int i = 0; i < matrixNum; i++) {           // Инициализируем вес ребра
-			char start     = readChar();               // Начальная точка края
-			char end       = readChar();               // Конец ребра
-			int weight     = sca.nextInt();            // Вес края
+		System.out.println("--Ввод графа--");
+		for(int i = 0; i < matrixNum; i++) {
+			System.out.println("Начальная вершина: ");
+			char start     = readChar();
+			System.out.println("Конечная вершина: ");
+			char end       = readChar();
+			System.out.println("Вес ребра: ");
+			int weight     = sca.nextInt();
 			int startInedx = getLocation(start);       // Получаем координаты начальной точки края
 			int endIndex   = getLocation(end);         // Получаем координаты конечной точки края
 			if(startInedx == -1 || endIndex == -1) return;

@@ -1,8 +1,8 @@
 import heap.heap;
+import bfs.bfs;
 
 public class zyzf {
     public static void main(String[] args) {
-
         heap heap = new heap(31);
         heap.insertNode(120);
         heap.printHeap();
@@ -48,7 +48,10 @@ public class zyzf {
         heap.printHeap();
         heap.removeNode(5);
         heap.printHeap();
+        heap.insertNode(15);
         heap.changeNode(18, 200);
         heap.printHeap();
+        // bfs bfs = new bfs();
+        // bfs.BFS();
     }
 }
