@@ -16,13 +16,13 @@ class Node {
     }
 }
 
-public class heap {
+public class Heap {
     private Node[] heapArray; // массив со всеми вершинами
     private int maxSize; // размер массива
     private int currentSize; // количество узлов массиве
     final int deleted = -999999;
 
-    public heap(int maxSize) {
+    public Heap(int maxSize) {
         this.maxSize = maxSize;
         this.currentSize = 0;
         heapArray = new Node[maxSize];
