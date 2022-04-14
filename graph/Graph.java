@@ -1,11 +1,13 @@
 package graph;
 import java.util.Scanner;
-import java.io.IOException;
+import java.io.*;
+import java.util.*;
 
 public class Graph {
 
     private char[] vertex;    // Коллекция вершин
 	private int[][] matrix;   // Матрица смежности
+	private LinkedList<Integer> adjLists[][]; // Список смежности
 	private static final int INF = 999999;
 	private static int count = 0;
 	/**
@@ -27,6 +29,17 @@ public class Graph {
 				matrix[i][j] = 	(i == j) ?  0 : INF;
 			}
 		}
+
+		// Инициализируем списки
+		adjLists = new LinkedList[vertexNum][2];
+ 
+        for (int i = 0; i < vertexNum; i++) {
+			adjLists[i] = new LinkedList[2];
+			for (int j = 0; j < 2; j++) {
+				adjLists[i][j] = new LinkedList();
+			}
+		}
+
 		System.out.println("Граф ориентированный? (1, 0): ");
 		int orient = sca.nextInt();
 		System.out.println("--Ввод графа--");
@@ -43,10 +56,31 @@ public class Graph {
 			if (orient == 0) {
 				matrix[startInedx][endIndex] = weight;
 				matrix[endIndex][startInedx] = weight;
+				adjLists[startInedx][0].add(endIndex);
+				adjLists[startInedx][1].add(weight);
+				adjLists[endIndex][0].add(startInedx);
+				adjLists[endIndex][1].add(weight);
+				
 			} else {
 				matrix[startInedx][endIndex] = weight;
+				adjLists[startInedx][0].add(endIndex);
+				adjLists[startInedx][0].add(weight);
 			}
 		}
+
+		System.out.printf("\n");
+		for (int i = 0; i < vertexNum; i++) {
+			for (int j = 0; j < vertexNum; j++) {
+				if (matrix[i][j] == INF) {
+					System.out.printf("%4s", "INF");
+				} else {
+					System.out.printf("%4d", matrix[i][j]);
+				}
+			}
+			System.out.printf("\n");
+		}
+		System.out.printf("\n");
+
 		sca.close();
 	}
 
@@ -61,26 +95,26 @@ public class Graph {
 		System.out.println("BFS:");
 		for(int i = 0; i < vertex.length; i++) {
 			if(!visited[i]) {
-				count++;
-				visited[i] = true;
 				if (count == vertex.length) {
 					System.out.print(vertex[i]);
 				} else {
-					System.out.print(vertex[i] + "————>");
+					System.out.print(vertex[i] + "——>");
 				}
+				count++;
+				visited[i] = true;
 				queue[rear++] = i;                      // Поставить в очередь
 			}
 			while(head != rear) {
 				int j = queue[head++];                  // Вне очереди
 				for (int k = firstVertex(j); k >= 0; k = nextVertex(j, k)) { // k - соседняя вершина для посещения
 					if (!visited[k]) {
-						visited[k] = true;
-						count++;
 						if (count == vertex.length) {
 							System.out.print(vertex[k]);
 						} else {
-							System.out.print(vertex[k] + "————>");
+							System.out.print(vertex[k] + "——>");
 						}
+						visited[k] = true;
+						count++;
 						queue[rear++] = k;
 					}
 				}
@@ -88,22 +122,20 @@ public class Graph {
 		}
 		System.out.println();
 	}
-    /**
-	  * Вернуть индекс первой смежной вершины вершины v, вернуть -1 в случае неудачи
-	 */
+
+	
 	private int firstVertex(int v) {
 		if (v < 0 || v > (vertex.length - 1))
 			return -1;
 		for (int i = 0; i < vertex.length; i++) {
-			if(matrix[v][i] != 0 && matrix[v][i] != INF) {
+			if (matrix[v][i] != 0 && matrix[v][i] != INF) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	/**
-	  * Возвращает индекс следующей смежной вершины вершины v относительно w или -1 в случае ошибки
-	 */
+
+	
 	private int nextVertex(int v, int j) {
 		if (v < 0 || v > (vertex.length - 1) || j < 0 || j > (vertex.length - 1))
 			return -1;
@@ -113,10 +145,8 @@ public class Graph {
 		}
 		return -1;
 	}
-	/**
-	  * Прочитать введенный символ
-	 * @return
-	 */
+
+
 	private char readChar() {
 		char ch = '0';
 		do {
@@ -128,9 +158,8 @@ public class Graph {
 		} while (!((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')));
 		return ch;
 	}
-	/**
-	  * Вернуть позицию персонажа
-	 */
+
+
 	private int getLocation(char c) {
 		for (int i = 0; i < vertex.length; i++) 
 			if (vertex[i] == c) return i;
@@ -143,8 +172,15 @@ public class Graph {
 		int[][] dist = new int[vertex.length][vertex.length];
 		for (int i = 0; i < vertex.length; i++) {
 			for (int j = 0; j < vertex.length; j++) {
-				dist[i][j] = matrix[i][j];
+				dist[i][j] = (i == j) ?  0 : INF;
 			}
+		}
+		for (int i = 0; i < vertex.length; i++) {
+			for (int k = 0; k < adjLists[i][0].size(); k++) {
+				int j = adjLists[i][0].get(k);
+				dist[i][j] = adjLists[i][1].get(k);
+			}
+			
 		}
 		
 		for (int k = 0; k < vertex.length; k++) {
@@ -156,12 +192,26 @@ public class Graph {
 				}
 			}
 		}
-
-		for (int i = 0; i < vertex.length; i++) {
-			System.out.printf("\n");
-			for (int j = 0; j < vertex.length; j++) {
-				System.out.printf("%3d", dist[i][j]);
+		
+		for (int i = 0; i < vertex.length+1; i++) {
+			if (i == 0) {
+				System.out.printf("    ");
+			} else {
+				System.out.printf("%4c", vertex[i-1]);
 			}
 		}
+		System.out.printf("\n");
+		for (int i = 0; i < dist[0].length; i++) {
+			System.out.printf("%4c", vertex[i]);
+			for (int j = 0; j < dist[0].length; j++) {
+				if (dist[i][j] == INF) {
+					System.out.printf("%4s", "INF");
+				} else {
+					System.out.printf("%4d", dist[i][j]);
+				}
+			}
+			System.out.printf("\n");
+		}
+		System.out.printf("\n");
 	}
 }
