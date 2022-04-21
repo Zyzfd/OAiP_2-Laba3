@@ -9,6 +9,7 @@ public class Graph {
 	private int[][] matrix;   // Матрица смежности
 	private LinkedList<Integer> adjLists[][]; // Список смежности
 	private static final int INF = 999999;
+	private static final int NO_INF = -999999;
 	private static int count = 0;
 	/**
 	  * Создать график
@@ -172,7 +173,7 @@ public class Graph {
 		int[][] dist = new int[vertex.length][vertex.length];
 		for (int i = 0; i < vertex.length; i++) {
 			for (int j = 0; j < vertex.length; j++) {
-				dist[i][j] = (i == j) ?  0 : INF;
+				dist[i][j] = (i == j) ?  NO_INF : INF;
 			}
 		}
 		for (int i = 0; i < vertex.length; i++) {
@@ -186,7 +187,7 @@ public class Graph {
 		for (int k = 0; k < vertex.length; k++) {
 			for (int i = 0; i < vertex.length; i++) {
 				for (int j = 0; j < vertex.length; j++) {
-					if (dist[i][j] > dist[i][k] + dist[k][j]) {
+					if (dist[i][j] > dist[i][k] + dist[k][j] && dist[i][j] != NO_INF && dist[i][k] != NO_INF && dist[k][j] != NO_INF) {
 						dist[i][j] = dist[i][k] + dist[k][j];
 					}
 				}
@@ -205,9 +206,11 @@ public class Graph {
 			System.out.printf("%4c", vertex[i]);
 			for (int j = 0; j < dist[0].length; j++) {
 				if (dist[i][j] == INF) {
-					System.out.printf("%4s", "INF");
+					System.out.printf("%5s", "INF");
+				} else if (dist[i][j] == NO_INF) {
+					System.out.printf("%5s", "-INF");
 				} else {
-					System.out.printf("%4d", dist[i][j]);
+					System.out.printf("%5d", dist[i][j]);
 				}
 			}
 			System.out.printf("\n");
